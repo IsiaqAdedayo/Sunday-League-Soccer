@@ -203,7 +203,7 @@ export default function AdminDashboard() {
       for (const teamName in teamStats) {
         const team = teamStats[teamName];
         team.goalDifference = team.goalsFor - team.goalsAgainst;
-        await updateDoc(doc(db, "teams", team.id), team);
+        await updateDoc(doc(db, "teams", team.id), (team as any));
       }
 
       message.success("Standings recalculated successfully!");
