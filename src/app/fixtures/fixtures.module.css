@@ -1,0 +1,130 @@
+.main {
+  min-height: 100vh;
+  padding: 40px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00FF87 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: var(--text-secondary);
+}
+
+.tabs {
+  margin-top: 32px;
+}
+
+.fixturesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.fixtureCard {
+  background: var(--card-bg);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.fixtureCard:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 8px 32px rgba(0, 255, 135, 0.2);
+}
+
+.fixtureHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.matchTime {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.fixtureBody {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.team {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.team:last-child {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.teamName {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.score {
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--primary-green);
+  min-width: 40px;
+  text-align: center;
+}
+
+.versus {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .fixturesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .teamName {
+    font-size: 16px;
+  }
+
+  .score {
+    font-size: 24px;
+  }
+}

@@ -1,0 +1,247 @@
+.main {
+  min-height: 100vh;
+  padding: 40px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  padding: 60px 0;
+}
+
+.heroContent {
+  margin-bottom: 60px;
+}
+
+.title {
+  font-size: 72px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00FF87 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-size: 24px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  background: rgba(0, 255, 135, 0.1);
+  border: 2px solid var(--primary-green);
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--primary-green);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 255, 135, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(0, 255, 135, 0.8);
+  }
+}
+
+.statsRow {
+  margin-bottom: 80px;
+}
+
+.statCard {
+  text-align: center;
+  padding: 24px;
+  height: 100%;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.statCard:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 8px 32px rgba(0, 255, 135, 0.2);
+}
+
+.statIcon {
+  margin-bottom: 8px;
+  font-size: 32px;
+}
+
+.featuresSection {
+  margin-top: 80px;
+}
+
+.sectionTitle {
+  font-size: 48px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 48px;
+  background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.featureCard {
+  text-align: center;
+  padding: 40px 24px;
+  height: 100%;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+	cursor: pointer;
+	height: 280px;
+	min-height: 300px;
+}
+
+.featureCard:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 12px 48px rgba(0, 255, 135, 0.2);
+}
+
+.featureIcon {
+  color: var(--primary-green);
+  margin-bottom: 16px;
+}
+
+.featureCard h3 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.featureCard p {
+  font-size: 16px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Footer Styles */
+.footer {
+  margin-top: 120px;
+  padding: 48px 0 32px;
+  border-top: 2px solid rgba(0, 255, 135, 0.2);
+}
+
+.footerContent {
+  max-width: 100%;
+}
+
+.footerTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.footerBrand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: bold;
+  color: var(--primary-green);
+}
+
+.contactButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #00FF87 0%, #00CC6E 100%);
+  color: #0A0E27;
+  border-radius: 50px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 255, 135, 0.3);
+}
+
+.contactButton:hover {
+  box-shadow: 0 6px 30px rgba(0, 255, 135, 0.5);
+  transform: translateY(-2px);
+  color: #0A0E27;
+}
+
+.contactButton svg {
+  flex-shrink: 0;
+}
+
+.footerDivider {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 135, 0.3) 50%,
+    transparent 100%
+  );
+  margin: 32px 0;
+}
+
+.footerBottom {
+  text-align: center;
+}
+
+.copyright {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.tagline {
+  font-size: 14px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 42px;
+  }
+
+  .subtitle {
+    font-size: 18px;
+  }
+
+  .main {
+    padding: 24px 16px;
+  }
+
+  .hero {
+    padding: 40px 0;
+  }
+
+  .sectionTitle {
+    font-size: 32px;
+  }
+
+  .footer {
+    margin-top: 80px;
+  }
+
+  .footerTop {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footerBrand {
+    justify-content: center;
+  }
+
+  .contactButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

@@ -1,0 +1,16 @@
+.container {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  width: 400px;
+  height: 200px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.6;
+}
+
+.ball {
+  font-size: 40px;
+  position: absolute;
+  filter: drop-shadow(0 4px 8px rgba(0, 255, 135, 0.3));
+}
