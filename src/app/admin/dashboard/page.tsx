@@ -1,38 +1,41 @@
 "use client";
 
-import { db } from "../../../lib/firebase";
-import { Booking, Fixture, Player, Team } from "../../../../types";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
+  Tabs,
   Button,
+  Table,
+  Modal,
   Form,
   Input,
   InputNumber,
-  message,
-  Modal,
-  Popconfirm,
   Select,
-  Table,
-  Tabs,
+  message,
+  Popconfirm,
+  DatePicker,
+  Switch,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
-  addDoc,
   collection,
+  getDocs,
+  addDoc,
+  updateDoc,
   deleteDoc,
   doc,
-  getDocs,
-  updateDoc,
 } from "firebase/firestore";
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { db } from "@/lib/firebase";
+import { Team, Fixture, Player, Booking } from "../../../../types";
 import {
   IoAdd,
   IoCreate,
-  IoFootball,
-  IoLogOut,
   IoTrash,
+  IoLogOut,
+  IoFootball,
 } from "react-icons/io5";
+import dayjs from "dayjs";
 import styles from "./dashboard.module.css";
 
 export default function AdminDashboard() {
@@ -203,18 +206,28 @@ export default function AdminDashboard() {
       for (const teamName in teamStats) {
         const team = teamStats[teamName];
         team.goalDifference = team.goalsFor - team.goalsAgainst;
-        await updateDoc(doc(db, "teams", team.id), (team as any));
+
+        // Remove id field before updating
+        const { id, ...teamData } = team;
+        await updateDoc(doc(db, "teams", team.id), teamData);
       }
 
       message.success("Standings recalculated successfully!");
-      fetchAllData();
+      await fetchAllData();
     } catch (error) {
       console.error("Error recalculating standings:", error);
       message.error("Failed to recalculate standings");
     }
   };
 
-  // Team Columns
+  // Team Columns - Sorted by points
+  const sortedTeams = [...teams].sort((a, b) => {
+    if (b.points !== a.points) return b.points - a.points;
+    if (b.goalDifference !== a.goalDifference)
+      return b.goalDifference - a.goalDifference;
+    return b.goalsFor - a.goalsFor;
+  });
+
   const teamColumns: ColumnsType<Team> = [
     { title: "Name", dataIndex: "name", key: "name" },
     { title: "Short Name", dataIndex: "shortName", key: "shortName" },
@@ -244,7 +257,40 @@ export default function AdminDashboard() {
     },
   ];
 
-  // Fixture Columns
+  // Fixture Columns - Sort fixtures by matchday (desc) and time (latest first)
+  const sortedFixtures = [...fixtures].sort((a, b) => {
+    // First sort by matchday descending (latest matchday first)
+    if (a.matchday !== b.matchday) return a.matchday - b.matchday;
+
+    // Then sort by time if available
+    if (a.time && b.time) {
+      // Extract time for comparison (handle ranges like "4:15 - 4:35 PM")
+      const getTimeValue = (timeStr: string) => {
+        // Get the first time in the range
+        const firstTime = timeStr.split("-")[0].trim();
+        const isPM = timeStr.toUpperCase().includes("PM");
+        const [hours, minutes] = firstTime
+          .split(":")
+          .map((s) => parseInt(s.replace(/\D/g, "")));
+        let hour24 = hours;
+
+        // Convert to 24-hour format
+        if (isPM && hour24 !== 12) hour24 += 12;
+        if (!isPM && hour24 === 12) hour24 = 0;
+
+        return hour24 * 60 + (minutes || 0);
+      };
+
+      try {
+        return getTimeValue(a.time) - getTimeValue(b.time); // Latest time first
+      } catch (e) {
+        return 0;
+      }
+    }
+
+    return 0;
+  });
+
   const fixtureColumns: ColumnsType<Fixture> = [
     { title: "Matchday", dataIndex: "matchday", key: "matchday", width: 100 },
     { title: "Home Team", dataIndex: "homeTeam", key: "homeTeam" },
@@ -265,7 +311,7 @@ export default function AdminDashboard() {
       key: "status",
       render: (status: string) => (
         <span className={styles[`status-${status}`]}>
-          {status?.toUpperCase()}
+          {status.toUpperCase()}
         </span>
       ),
     },
@@ -290,22 +336,80 @@ export default function AdminDashboard() {
     },
   ];
 
-  // Player Columns
+  // Player Columns - Sortable with fixed rank
+  const sortedPlayers = [...players].sort((a, b) => {
+    // Default sort by goals descending
+    if (b.goals !== a.goals) return b.goals - a.goals;
+    if (b.assists !== a.assists) return b.assists - a.assists;
+    return b.cleanSheets || 0 - (a.cleanSheets || 0);
+  });
+
   const playerColumns: ColumnsType<Player> = [
-    { title: "Name", dataIndex: "name", key: "name" },
-    { title: "Team", dataIndex: "team", key: "team" },
-    { title: "Position", dataIndex: "position", key: "position", width: 100 },
-    { title: "Goals", dataIndex: "goals", key: "goals", width: 80 },
-    { title: "Assists", dataIndex: "assists", key: "assists", width: 80 },
+    {
+      title: "Rank",
+      key: "rank",
+      width: 70,
+      fixed: "left",
+      render: (_: any, record: Player) => {
+        const index = sortedPlayers.findIndex((p) => p.id === record.id);
+        return <strong>{index + 1}</strong>;
+      },
+    },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      sorter: (a, b) => a.name.localeCompare(b.name),
+    },
+    {
+      title: "Team",
+      dataIndex: "team",
+      key: "team",
+      sorter: (a, b) => a.team.localeCompare(b.team),
+    },
+    {
+      title: "Goals",
+      dataIndex: "goals",
+      key: "goals",
+      width: 110,
+      sorter: (a, b) => a.goals - b.goals,
+      defaultSortOrder: "descend",
+    },
+    {
+      title: "Assists",
+      dataIndex: "assists",
+      key: "assists",
+      width: 110,
+      sorter: (a, b) => a.assists - b.assists,
+    },
     {
       title: "Clean Sheets",
       dataIndex: "cleanSheets",
       key: "cleanSheets",
       width: 120,
+      sorter: (a, b) => (a.cleanSheets || 0) - (b.cleanSheets || 0),
+    },
+    {
+      title: "Yellow Cards",
+      dataIndex: "yellowCards",
+      key: "yellowCards",
+      width: 120,
+      sorter: (a, b) => (a.yellowCards || 0) - (b.yellowCards || 0),
+      render: (cards: number) => cards || 0,
+    },
+    {
+      title: "Red Cards",
+      dataIndex: "redCards",
+      key: "redCards",
+      width: 100,
+      sorter: (a, b) => (a.redCards || 0) - (b.redCards || 0),
+      render: (cards: number) => cards || 0,
     },
     {
       title: "Actions",
       key: "actions",
+      fixed: "right",
+      width: 120,
       render: (_: any, record: Player) => (
         <div className={styles.actions}>
           <Button
@@ -367,7 +471,7 @@ export default function AdminDashboard() {
                 </div>
                 <Table
                   columns={teamColumns}
-                  dataSource={teams}
+                  dataSource={sortedTeams}
                   rowKey="id"
                   loading={loading}
                   pagination={false}
@@ -394,7 +498,7 @@ export default function AdminDashboard() {
                 </div>
                 <Table
                   columns={fixtureColumns}
-                  dataSource={fixtures}
+                  dataSource={sortedFixtures}
                   rowKey="id"
                   loading={loading}
                 />
@@ -417,9 +521,10 @@ export default function AdminDashboard() {
                 </div>
                 <Table
                   columns={playerColumns}
-                  dataSource={players}
+                  dataSource={sortedPlayers}
                   rowKey="id"
                   loading={loading}
+                  scroll={{ x: 1000 }}
                 />
               </div>
             ),
@@ -580,3 +685,4 @@ export default function AdminDashboard() {
     </div>
   );
 }
+

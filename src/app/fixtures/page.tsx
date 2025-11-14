@@ -1,12 +1,12 @@
 "use client";
 
-import Navigation from "../../components/Navigation";
-import { db } from "../../lib/firebase";
-import { Fixture } from "../../../types";
-import { Badge, Card, Empty, Tabs } from "antd";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Card, Badge, Tabs, Empty } from "antd";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import Navigation from "@/components/Navigation";
+import { Fixture } from "../../../types";
 import styles from "./fixtures.module.css";
 
 export default function FixturesPage() {
@@ -19,12 +19,45 @@ export default function FixturesPage() {
 
   const fetchFixtures = async () => {
     try {
-      const q = query(collection(db, "fixtures"), orderBy("matchday", "asc"));
-      const snapshot = await getDocs(q);
-      const fixturesData = snapshot.docs.map((doc) => ({
+      const snapshot = await getDocs(collection(db, "fixtures"));
+      let fixturesData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Fixture[];
+
+      // Sort fixtures: Latest matchday first, then latest time first
+      fixturesData.sort((a, b) => {
+        // First sort by matchday descending (latest matchday first)
+        if (a.matchday !== b.matchday) return a.matchday - b.matchday;
+
+        // Then sort by time if available (latest time first)
+        if (a.time && b.time) {
+          const getTimeValue = (timeStr: string) => {
+            try {
+              // Get the first time in the range (e.g., "4:15 - 4:35 PM" -> "4:15")
+              const firstTime = timeStr.split("-")[0].trim();
+              const isPM = timeStr.toUpperCase().includes("PM");
+              const [hours, minutes] = firstTime
+                .split(":")
+                .map((s) => parseInt(s.replace(/\D/g, "")));
+              let hour24 = hours;
+
+              // Convert to 24-hour format
+              if (isPM && hour24 !== 12) hour24 += 12;
+              if (!isPM && hour24 === 12) hour24 = 0;
+
+              return hour24 * 60 + (minutes || 0);
+            } catch (e) {
+              return 0;
+            }
+          };
+
+          return getTimeValue(a.time) - getTimeValue(b.time); // Latest time first
+        }
+
+        return 0;
+      });
+
       setFixtures(fixturesData);
     } catch (error) {
       console.error("Error fetching fixtures:", error);
@@ -112,18 +145,24 @@ export default function FixturesPage() {
           <Empty description="No fixtures scheduled yet" />
         ) : (
           <Tabs
-            defaultActiveKey="1"
-            items={Object.keys(groupedFixtures).map((matchday) => ({
-              key: matchday,
-              label: `Matchday ${matchday}`,
-              children: (
-                <div className={styles.fixturesGrid}>
-                  {groupedFixtures[Number(matchday)].map((fixture) => (
-                    <FixtureCard key={fixture.id} fixture={fixture} />
-                  ))}
-                </div>
-              ),
-            }))}
+            defaultActiveKey={
+              Object.keys(groupedFixtures).sort(
+                (a, b) => Number(a) - Number(b)
+              )[0]
+            }
+            items={Object.keys(groupedFixtures)
+              .sort((a, b) => Number(a) - Number(b)) // Latest matchday first
+              .map((matchday) => ({
+                key: matchday,
+                label: `Matchday ${matchday}`,
+                children: (
+                  <div className={styles.fixturesGrid}>
+                    {groupedFixtures[Number(matchday)].map((fixture: any) => (
+                      <FixtureCard key={fixture.id} fixture={fixture} />
+                    ))}
+                  </div>
+                ),
+              }))}
             className={styles.tabs}
           />
         )}
