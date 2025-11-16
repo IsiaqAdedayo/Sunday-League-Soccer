@@ -27,7 +27,7 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Team, Fixture, Player, Booking } from "../../../../types";
+import { Team, Fixture, Player, Booking, Media } from "../../../../types";
 import {
   IoAdd,
   IoCreate,
@@ -37,6 +37,7 @@ import {
 } from "react-icons/io5";
 import dayjs from "dayjs";
 import styles from "./dashboard.module.css";
+import MediaUpload from "@/components/MediaUpload";
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -47,9 +48,10 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<
-    "team" | "fixture" | "player" | "booking"
+    "team" | "fixture" | "player" | "booking" | "media"
   >("team");
   const [editingItem, setEditingItem] = useState<any>(null);
+	const [mediaItems, setMediaItems] = useState<Media[]>([]);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -79,6 +81,10 @@ export default function AdminDashboard() {
         fixturesSnap.docs.map(
           (doc) => ({ id: doc.id, ...doc.data() }) as Fixture
         )
+      );
+			const mediaSnap = await getDocs(collection(db, "gallery"));
+      setMediaItems(
+        mediaSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Media)
       );
       setPlayers(
         playersSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Player)
@@ -151,6 +157,7 @@ export default function AdminDashboard() {
       fixture: "fixtures",
       player: "players",
       booking: "bookings",
+			media: "gallery",
     };
     return map[modalType];
   };
@@ -428,6 +435,48 @@ export default function AdminDashboard() {
     },
   ];
 
+	//Gallery columns
+	const mediaColumns: ColumnsType<Media> = [
+    {
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
+      width: 80,
+      render: (type: string) => <span>{type === "video" ? "🎥" : "📷"}</span>,
+    },
+    { title: "Title", dataIndex: "title", key: "title" },
+    { title: "Category", dataIndex: "category", key: "category" },
+    { title: "Matchday", dataIndex: "matchday", key: "matchday", width: 100 },
+    {
+      title: "Views",
+      dataIndex: "views",
+      key: "views",
+      width: 80,
+      sorter: (a, b) => a.views - b.views,
+    },
+    {
+      title: "Likes",
+      dataIndex: "likes",
+      key: "likes",
+      width: 80,
+      sorter: (a, b) => a.likes - b.likes,
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_: any, record: Media) => (
+        <div className={styles.actions}>
+          <Popconfirm
+            title="Delete this media?"
+            onConfirm={() => handleDelete(record.id, "gallery")}
+          >
+            <Button type="link" danger icon={<IoTrash />} />
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <div className={styles.container}>
       <motion.div
@@ -525,6 +574,29 @@ export default function AdminDashboard() {
                   rowKey="id"
                   loading={loading}
                   scroll={{ x: 1000 }}
+                />
+              </div>
+            ),
+          },
+          {
+            key: "gallery",
+            label: "Gallery",
+            children: (
+              <div className={styles.tabContent}>
+                <div className={styles.tabHeader}>
+                  <Button
+                    type="primary"
+                    icon={<IoAdd />}
+                    onClick={() => openModal("media")}
+                  >
+                    Upload Media
+                  </Button>
+                </div>
+                <Table
+                  columns={mediaColumns}
+                  dataSource={mediaItems}
+                  rowKey="id"
+                  loading={loading}
                 />
               </div>
             ),
@@ -682,6 +754,15 @@ export default function AdminDashboard() {
           )}
         </Form>
       </Modal>
+      <MediaUpload
+        visible={modalVisible && modalType === "media"}
+        onClose={() => {
+          setModalVisible(false);
+          setEditingItem(null);
+        }}
+        onSuccess={fetchAllData}
+        teams={teams.map((t) => t.name)}
+      />
     </div>
   );
 }

@@ -1,0 +1,61 @@
+.shareButtons {
+  margin: 24px 0;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.whatsappButton {
+  background: #25D366 !important;
+  border-color: #25D366 !important;
+  color: white !important;
+}
+
+.whatsappButton:hover {
+  background: #1fb855 !important;
+  border-color: #1fb855 !important;
+}
+
+.twitterButton {
+  background: #1DA1F2 !important;
+  border-color: #1DA1F2 !important;
+  color: white !important;
+}
+
+.twitterButton:hover {
+  background: #1a8cd8 !important;
+  border-color: #1a8cd8 !important;
+}
+
+.facebookButton {
+  background: #4267B2 !important;
+  border-color: #4267B2 !important;
+  color: white !important;
+}
+
+.facebookButton:hover {
+  background: #365899 !important;
+  border-color: #365899 !important;
+}
+
+.copyButton {
+  background: var(--primary-green) !important;
+  border-color: var(--primary-green) !important;
+  color: #0A0E27 !important;
+  font-weight: 600;
+}
+
+.copyButton:hover {
+  background: #00CC6E !important;
+  border-color: #00CC6E !important;
+}

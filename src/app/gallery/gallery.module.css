@@ -1,0 +1,237 @@
+.main {
+  min-height: 100vh;
+  padding: 40px 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 56px;
+  font-weight: 900;
+  background: linear-gradient(135deg, #00FF87 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: var(--text-secondary);
+}
+
+.tabs {
+  margin-bottom: 32px;
+}
+
+.loading {
+  text-align: center;
+  padding: 60px;
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+/* Masonry Grid */
+.masonryGrid {
+  display: flex;
+  margin-left: -16px;
+  width: auto;
+}
+
+.masonryColumn {
+  padding-left: 16px;
+  background-clip: padding-box;
+}
+
+.masonryColumn > div {
+  margin-bottom: 16px;
+}
+
+/* Media Card */
+.mediaCard {
+  cursor: pointer;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-bg);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.mediaCard:hover {
+  border-color: var(--primary-green);
+  box-shadow: 0 12px 48px rgba(0, 255, 135, 0.3);
+}
+
+.mediaWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.thumbnail,
+.photo {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.videoOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.playIcon {
+  font-size: 64px;
+  color: white;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.duration {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 16px;
+}
+
+.mediaCard:hover .overlay {
+  opacity: 1;
+}
+
+.overlayContent h3 {
+  color: white;
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.stats {
+  display: flex;
+  gap: 16px;
+  color: white;
+  font-size: 14px;
+}
+
+.stats span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Modal */
+.modal {
+  top: 20px;
+}
+
+.modalContent {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.videoPlayer {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: black;
+}
+
+.modalImage {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.modalInfo h2 {
+  font-size: 28px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.modalInfo p {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.badge {
+  display: inline-block;
+  background: rgba(0, 255, 135, 0.1);
+  border: 1px solid var(--primary-green);
+  color: var(--primary-green);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.teams {
+  font-size: 16px;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.viewCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 36px;
+  }
+
+  .masonryGrid {
+    margin-left: 0;
+  }
+
+  .masonryColumn {
+    padding-left: 0;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .actions button {
+    width: 100%;
+  }
+}

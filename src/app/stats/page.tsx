@@ -3,7 +3,7 @@
 import Navigation from "../../components/Navigation";
 import { db } from "../../lib/firebase";
 import { Player } from "../../../types";
-import { Card, Table, Tabs } from "antd";
+import { Card, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { collection, getDocs } from "firebase/firestore";
 import { motion } from "framer-motion";
@@ -203,7 +203,7 @@ export default function StatsPage() {
       width: 100,
       align: "center",
       render: (cards: number) => (
-        <span className={styles.yellowCard}>{cards}</span>
+        <span className={styles.yellowCard}>{cards || 0}</span>
       ),
     },
     {
@@ -217,13 +217,14 @@ export default function StatsPage() {
       width: 100,
       align: "center",
       render: (cards: number) => (
-        <span className={styles.redCard}>{cards}</span>
+        <span className={styles.redCard}>{cards || 0}</span>
       ),
     },
   ];
 
   const playersWithCards = players.filter(
-    (p) => p.yellowCards > 0 || p.redCards > 0
+    (p) =>
+      (p.yellowCards && p.yellowCards > 0) || (p.redCards && p.redCards > 0)
   );
 
   return (
@@ -239,112 +240,95 @@ export default function StatsPage() {
           <p className={styles.subtitle}>Top performers of the tournament</p>
         </motion.div>
 
-        <Tabs
-          defaultActiveKey="scorers"
-          items={[
-            {
-              key: "scorers",
-              label: (
-                <span className={styles.tabLabel}>
-                  <IoFootball /> Top Scorers
-                </span>
-              ),
-              children: (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={styles.tableWrapper}
-                >
-                  <Card className={styles.card}>
-                    <Table
-                      columns={scorerColumns}
-                      dataSource={topScorers}
-                      rowKey="id"
-                      loading={loading}
-                      pagination={false}
-                    />
-                  </Card>
-                </motion.div>
-              ),
-            },
-            {
-              key: "assists",
-              label: (
-                <span className={styles.tabLabel}>
-                  <IoFlash /> Top Assists
-                </span>
-              ),
-              children: (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={styles.tableWrapper}
-                >
-                  <Card className={styles.card}>
-                    <Table
-                      columns={assistColumns}
-                      dataSource={topAssists}
-                      rowKey="id"
-                      loading={loading}
-                      pagination={false}
-                    />
-                  </Card>
-                </motion.div>
-              ),
-            },
-            {
-              key: "cleansheets",
-              label: (
-                <span className={styles.tabLabel}>
-                  <IoShield /> Clean Sheets
-                </span>
-              ),
-              children: (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={styles.tableWrapper}
-                >
-                  <Card className={styles.card}>
-                    <Table
-                      columns={cleanSheetColumns}
-                      dataSource={cleanSheets}
-                      rowKey="id"
-                      loading={loading}
-                      pagination={false}
-                    />
-                  </Card>
-                </motion.div>
-              ),
-            },
-            {
-              key: "discipline",
-              label: (
-                <span className={styles.tabLabel}>
-                  <IoWarning /> Discipline
-                </span>
-              ),
-              children: (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className={styles.tableWrapper}
-                >
-                  <Card className={styles.card}>
-                    <Table
-                      columns={disciplineColumns}
-                      dataSource={playersWithCards}
-                      rowKey="id"
-                      loading={loading}
-                      pagination={false}
-                    />
-                  </Card>
-                </motion.div>
-              ),
-            },
-          ]}
-          className={styles.tabs}
-        />
+        <div className={styles.statsContainer}>
+          {/* Top Scorers */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className={styles.statSection}
+          >
+            <div className={styles.sectionHeader}>
+              <IoFootball className={styles.sectionIcon} />
+              <h2>Top Scorers</h2>
+            </div>
+            <Card className={styles.card}>
+              <Table
+                columns={scorerColumns}
+                dataSource={topScorers}
+                rowKey="id"
+                loading={loading}
+                pagination={false}
+              />
+            </Card>
+          </motion.div>
+
+          {/* Top Assists */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className={styles.statSection}
+          >
+            <div className={styles.sectionHeader}>
+              <IoFlash className={styles.sectionIcon} />
+              <h2>Top Assists</h2>
+            </div>
+            <Card className={styles.card}>
+              <Table
+                columns={assistColumns}
+                dataSource={topAssists}
+                rowKey="id"
+                loading={loading}
+                pagination={false}
+              />
+            </Card>
+          </motion.div>
+
+          {/* Clean Sheets */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className={styles.statSection}
+          >
+            <div className={styles.sectionHeader}>
+              <IoShield className={styles.sectionIcon} />
+              <h2>Clean Sheets</h2>
+            </div>
+            <Card className={styles.card}>
+              <Table
+                columns={cleanSheetColumns}
+                dataSource={cleanSheets}
+                rowKey="id"
+                loading={loading}
+                pagination={false}
+              />
+            </Card>
+          </motion.div>
+
+          {/* Discipline */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className={styles.statSection}
+          >
+            <div className={styles.sectionHeader}>
+              <IoWarning className={styles.sectionIcon} />
+              <h2>Discipline</h2>
+            </div>
+            <Card className={styles.card}>
+              <Table
+                columns={disciplineColumns}
+                dataSource={playersWithCards}
+                rowKey="id"
+                loading={loading}
+                pagination={false}
+              />
+            </Card>
+          </motion.div>
+        </div>
       </main>
     </>
   );

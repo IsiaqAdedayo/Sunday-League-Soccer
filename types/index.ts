@@ -21,7 +21,7 @@ export interface Fixture {
   date: string;
   time: string;
   matchday: number;
-  status: 'scheduled' | 'live' | 'finished';
+  status: "scheduled" | "live" | "finished";
 }
 
 export interface Player {
@@ -33,7 +33,7 @@ export interface Player {
   cleanSheets?: number;
   yellowCards: number;
   redCards: number;
-  position: 'GK' | 'DEF' | 'MID' | 'FWD';
+  position: "GK" | "DEF" | "MID" | "FWD";
 }
 
 export interface Booking {
@@ -41,7 +41,7 @@ export interface Booking {
   playerId: string;
   playerName: string;
   team: string;
-  type: 'yellow' | 'red';
+  type: "yellow" | "red";
   fixtureId: string;
   paid: boolean;
   amount: number;
@@ -52,4 +52,34 @@ export interface TournamentSettings {
   tournamentName: string;
   seasonYear: string;
   currentMatchday: number;
+}
+
+export interface Comment {
+  id: string;
+  mediaId: string;
+  userName: string;
+  userEmail?: string;
+  text: string;
+  createdAt: any;
+}
+
+// Update Media interface to include commentCount
+export interface Media {
+  id: string;
+  type: "photo" | "video";
+  title: string;
+  description?: string;
+  category: "match-action" | "team-photos" | "behind-scenes" | "top-moments";
+  matchday?: number;
+  teams?: string[];
+  url: string;
+  thumbnail?: string;
+  thumbnailSmall?: string; // Small thumbnail (200px)
+  thumbnailMedium?: string; // Medium thumbnail (500px)
+  duration?: number;
+  views: number;
+  likes: number;
+  commentCount: number; // Add this
+  uploadedAt: any;
+  uploadedBy: string;
 }
