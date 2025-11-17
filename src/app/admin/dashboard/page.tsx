@@ -524,6 +524,7 @@ export default function AdminDashboard() {
                   rowKey="id"
                   loading={loading}
                   pagination={false}
+                  scroll={{ x: "max-content" }}
                 />
               </div>
             ),
@@ -550,6 +551,7 @@ export default function AdminDashboard() {
                   dataSource={sortedFixtures}
                   rowKey="id"
                   loading={loading}
+                  scroll={{ x: "max-content" }}
                 />
               </div>
             ),
@@ -597,6 +599,7 @@ export default function AdminDashboard() {
                   dataSource={mediaItems}
                   rowKey="id"
                   loading={loading}
+                  scroll={{ x: "max-content" }}
                 />
               </div>
             ),
